@@ -5,10 +5,10 @@ var board;
 var money = false;
 var myGuess;
 var choices = [];
-var rnum;
+var random;
 var myMoney1 = 0;
 var myMoney2 = 0;
-var totguessed = 0;
+var totalGuessed = 0;
 let pNum = 0;
 
 function makename(){ //starts game
@@ -18,5 +18,9 @@ function makename(){ //starts game
 
 }
 function initword(){ //random word or phrase to guess
+
+}
+
+function addmore(){
 
 }
