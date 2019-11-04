@@ -1,2 +1,3 @@
-# wheelofFortune
-For M328
+# Wheel of Fortune Project
+For M328 <br/>
+(c) aisair 2019
