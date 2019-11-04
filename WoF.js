@@ -1,19 +1,19 @@
 let names = []; //player names
 let nameCount = 2; //amount of players
+let playerMoney = [];
 let word; //word to guess
 let board; //WoF board to display on page
 let money = false;
 let myGuess; //players' guess
 let choices = []; //letters guessed
 let random;
-let myMoney1 = 0;
-let myMoney2 = 0;
 let totalGuessed = 0;
 let turn = 0; //determines which players' turn it is
 
 function makeName(){ //starts game
     for (let i = 0; i < nameCount; i++){
-        names[i] = document.getElementById("txtName" + i.toString()).value();
+        names.push(document.getElementById("txtName" + i.toString()).value());
+        playerMoney.push(0);
     }
 }
 
