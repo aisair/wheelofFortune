@@ -1,26 +1,54 @@
-let name1;
-let name2;
-var word;
-var board;
-var money = false;
-var myGuess;
-var choices = [];
-var random;
-var myMoney1 = 0;
-var myMoney2 = 0;
-var totalGuessed = 0;
-let pNum = 0;
+let names = []; //player names
+let nameCount = 2; //amount of players
+let word; //word to guess
+let board; //WoF board to display on page
+let money = false;
+let myGuess; //players' guess
+let choices = []; //letters guessed
+let random;
+let myMoney1 = 0;
+let myMoney2 = 0;
+let totalGuessed = 0;
+let turn = 0; //determines which players' turn it is
 
-function makename(){ //starts game
-    name1 = document.getElementById("txtName1").value();
-    name2 = document.getElementById("txtName2").value();
-
-
-}
-function initword(){ //random word or phrase to guess
-
+function makeName(){ //starts game
+    for (let i = 0; i < nameCount; i++){
+        names[i] = document.getElementById("txtName" + i.toString()).value();
+    }
 }
 
-function addmore(){
+function initWord(){ //random word or phrase to guess
 
+}
+
+function addMore(){ //
+
+}
+
+function addMoney(){ //
+
+}
+
+function makeWord() {
+
+}
+
+function guess(){ //executes when a guess is made, controls game play
+    if (money !== false) {
+        money = false; //set bool back to false to prevent unwanted repetition (for next spin)
+        myGuess = prompt("What letter would you like to guess?");
+        choices.push(myGuess); //adds guessed letter to the already chosen array
+        alert(choices.join(",")); //for debugging
+        makeWord(); //call the function to display updated word
+    } else {
+        alert("Please click the spin button!");
+    }
+}
+
+function switchPlayer(){
+
+}
+
+function genDollar(){ //generate a random amount of money
+    return Math.floor((Math.random()*1000)+1);
 }
