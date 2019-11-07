@@ -1,18 +1,19 @@
 let names = []; //player names
-let playerMoney = [];
-let word; //word to guess
+let playerMoney = []; //player money
+let word = "index"; //word to guess
 let board; //WoF board to display on page
 let money = false;
 let myGuess; //players' guess
 let choices = []; //letters guessed
-let random;
+let random = 0;
 let totalGuessed = 0;
 let turn = 0; //determines which players' turn it is
 
 function addPlayers() {
-    let newLabel = document.createElement("label")
-    let labelContent = document.createTextNode("Player " + document.getElementById("playerNum").value.toString());
-    let newInput = document.createElement("input")
+    document.getElementById("playerNum").innerHTML = parseInt(document.getElementById("playerNum").innerHTML) + 1;
+    let newLabel = document.createElement("label");
+    let labelContent = document.createTextNode("Player " + document.getElementById("playerNum").innerHTML.toString());
+    let newInput = document.createElement("input");
     newLabel.appendChild(labelContent);
     newLabel.appendChild(newInput);
     document.getElementById("players").appendChild(newLabel);
@@ -24,6 +25,15 @@ function makeName(){ //starts game
         names.push(document.getElementById("txtName" + i.toString()).value());
         playerMoney.push(0);
     }
+}
+
+function spinWheel() {
+    random = genMoney();
+    alert("Player " + (turn+1) + " spins the Wheel... and lands on $" + random + "!");
+}
+
+function genMoney(){ //generate a random amount of money
+    return Math.floor((Math.random()*1000)+1);
 }
 
 function initWord(){ //random word or phrase to guess
@@ -39,7 +49,16 @@ function addMoney(){ //
 }
 
 function makeWord() {
-
+    for (let i = 0; i < word.length; i++){
+        for (let j = 0; j < choices.length; i++){
+            if (choices[j] === word.charAt(i)){
+                board += choices[j];
+            }
+            else{
+                board += "_"
+            }
+        }
+    }
 }
 
 function guess(){ //executes when a guess is made, controls game play
@@ -58,6 +77,4 @@ function switchPlayer(){
 
 }
 
-function genDollar(){ //generate a random amount of money
-    return Math.floor((Math.random()*1000)+1);
-}
+makeWord();

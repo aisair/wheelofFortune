@@ -12,11 +12,9 @@
     <div class="intro">
         <h1>Welcome to Wheel of Fortune!</h1>
         <p>Please enter your names below:</p>
+        <br>
+        <p>Number of Players: <span id="playerNum">2</span></p>
         <form id="players">
-            <label>Number of Players
-                <input type="number" name="playerNum" step="1" id="playerNum" value="2" onchange="addPlayers()">
-            </label>
-            <br>
             <label>Player 1
                 <input type="text" id="p1">
             </label>
@@ -24,13 +22,16 @@
                 <input type="text" id="p2">
             </label>
         </form>
-        <button onclick="addPlayers()">lskdjflskjdfljsdlfkjsldkfjlskdfsd</button>
+        <button onclick="addPlayers()">Add a player</button>
         <br>
     </div>
     <div class="game">
-        <button id="spin" type="button" onclick="genDollar()">Click to spin the wheel!</button>
+        <br>
+        <button id="spin" type="button" onclick="spinWheel()">Click to spin the wheel!</button>
         <br>
         <button type="button" onclick="guess()">Click to guess a letter</button>
+        <br>
+        <p id="board"> testing </p>
     </div>
     <footer style="visibility: hidden">
         <a href="https://icons8.com/icon/63812/color-wheel">Color Wheel icon by Icons8</a>
