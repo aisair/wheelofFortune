@@ -5,7 +5,6 @@
     <link rel="icon" type="image/png" href="https://img.icons8.com/color/48/000000/rgb-circle-1--v1.png">
     <title>Wheel of Fortune</title>
     <link rel="stylesheet" type="text/css" href="style.css">
-    <script type="text/javascript" src="WoF.js"></script>
 </head>
 <body>
     <div class="background"></div>
@@ -24,6 +23,7 @@
         </form>
         <button onclick="addPlayers()">Add a player</button>
         <br>
+        <button type="button" onclick="makeName()">Click to Start the Game!</button>
     </div>
     <div class="game">
         <br>
@@ -31,10 +31,11 @@
         <br>
         <button type="button" onclick="guess()">Click to guess a letter</button>
         <br>
-        <p id="board"> testing </p>
     </div>
+    <p id="showWord">testing</p>
     <footer style="visibility: hidden">
         <a href="https://icons8.com/icon/63812/color-wheel">Color Wheel icon by Icons8</a>
     </footer>
+    <script type="text/javascript" src="WoF.js"></script>
 </body>
 </html>

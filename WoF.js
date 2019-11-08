@@ -1,7 +1,7 @@
 let names = []; //player names
 let playerMoney = []; //player money
 let word = "index"; //word to guess
-let board; //WoF board to display on page
+let board = ""; //WoF board to display on page
 let money = false;
 let myGuess; //players' guess
 let choices = []; //letters guessed
@@ -17,14 +17,15 @@ function addPlayers() {
     newLabel.appendChild(labelContent);
     newLabel.appendChild(newInput);
     document.getElementById("players").appendChild(newLabel);
-    console.log("appended");
 }
 
 function makeName(){ //starts game
-    for (let i = 0; i < document.getElementById("playerNum").value(); i++){
-        names.push(document.getElementById("txtName" + i.toString()).value());
+    for (let i = 0; i < parseInt(document.getElementById("playerNum").innerHTML); i++){
+        names.push(document.getElementById("p" + (i + 1).toString()).value);
         playerMoney.push(0);
     }
+    console.log(names);
+    console.log(playerMoney);
 }
 
 function spinWheel() {
@@ -49,16 +50,24 @@ function addMoney(){ //
 }
 
 function makeWord() {
+    choices = ["i"];
+    console.log(word.length);
+    console.log(choices.length);
     for (let i = 0; i < word.length; i++){
-        for (let j = 0; j < choices.length; i++){
+        for (let j = 0; j < choices.length; j++){
             if (choices[j] === word.charAt(i)){
                 board += choices[j];
+                console.log(choices[j]);
+                console.log(j);
             }
             else{
                 board += "_"
             }
         }
     }
+    console.log(board);
+    console.log(document.getElementById("showWord"));
+    document.getElementById("showWord").innerHTML = board;
 }
 
 function guess(){ //executes when a guess is made, controls game play
