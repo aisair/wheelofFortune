@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="background"></div>
-    <div class="intro">
+    <div id="intro">
         <h1>Welcome to Wheel of Fortune!</h1>
         <p>Please enter your names below:</p>
         <br>
@@ -23,18 +23,20 @@
         </form>
         <button onclick="addPlayers()">Add a player</button>
         <br>
-        <button type="button" onclick="makeName()">Click to Start the Game!</button>
+        <button type="button" onclick="makeName()" id="buttonStart">Click to Start the Game!</button>
     </div>
-    <div class="game">
+    <div id="game" style="visibility: hidden">
+        <h1>Wheel of Fortune</h1>
+        <h2 id="playerNames">Players: </h2>
         <br>
         <button id="spin" type="button" onclick="spinWheel()">Click to spin the wheel!</button>
+        <button type="button" onclick="guess()" id="guess" disabled>Click to guess a letter</button>
         <br>
-        <button type="button" onclick="guess()">Click to guess a letter</button>
-        <br>
+        <p id="showWord">testing</p>
     </div>
-    <p id="showWord">testing</p>
-    <footer style="visibility: hidden">
+    <footer style="display: none">
         <a href="https://icons8.com/icon/63812/color-wheel">Color Wheel icon by Icons8</a>
+        <a href="https://github.com/dwyl/english-words/">English Words from dwyl on Github</a>
     </footer>
     <script type="text/javascript" src="WoF.js"></script>
 </body>
