@@ -1,10 +1,11 @@
 let names = []; //player names
 let playerMoney = []; //player money
-let word = "default"; //word to guess
+let word = "index"; //word to guess
 let board = ""; //WoF board to display on page
 let myGuess; //players' current guess
 let choices = []; //letters already guessed
-let random = 0; //random amount of money, also determines if player has spun yet
+let randomNumber = 0; //compliments randomMoney, is random num from 1-24
+let randomMoney = 0; //random amount of money, also determines if player has spun yet
 let turn = 0; //determines which players' turn it is
 
 function addPlayers() {
@@ -46,14 +47,20 @@ function makeName(){ //starts game
 }
 
 function spinWheel() {
-    random = genMoney();
-    alert(names[turn] + " spins the Wheel... and lands on $" + random + "!");
+    randomNumber = Math.floor(Math.random()*24);
+    let deg = -(randomNumber / 24);
+    const boardValues = [500, 30, 200, 100, 500, 400, 300, 200, 100, 200, 850, 450, 200, 700, 250, 150, 400, 600, 250, 350, 500, 900, -1, 500];
+    randomMoney = boardValues[randomNumber];
+    document.getElementById("wheel").style.transform = "rotate(" + deg + "turn)";
+    if (randomMoney !== -1) {
+        alert(names[turn] + " spins the Wheel... and lands on $" + randomMoney + "!");
+    }
+    else{
+        alert(names[turn] + " spins the Wheel... and becomes bankrupt! Their amount of money has been set to 0.");
+        playerMoney[turn] = 0;
+    }
     document.getElementById("guess").removeAttribute("disabled");
     document.getElementById("spin").setAttribute("disabled", "");
-}
-
-function genMoney(){ //generate a random amount of money
-    return Math.floor((Math.random()*1000)+1);
 }
 
 function makeWord() {
@@ -70,10 +77,22 @@ function makeWord() {
     }
     board = board.split("").join(" "); //spaces out the string for visibility
     document.getElementById("showWord").innerHTML = "GameBoard: " + board; //prints board on page
+    if (board === word.split("").join(" ")){
+        alert("The word has been guessed! It was " + word +"!");
+        document.getElementById("playAgain").style.display = "block";
+    }
+}
+
+function playAgain() {
+    document.getElementById("playAgain").style.display = "none";
+    word = randomWord(); //new word!
+    choices = [];
+    turn = 0;
+    makeWord();
 }
 
 function guess(){ //executes when a guess is made, controls game play
-    if (random !== 0) {
+    if (randomMoney !== 0) {
         document.getElementById("guess").setAttribute("disabled", "");
         myGuess = prompt("What letter would you like to guess?");
         if (choices.indexOf(myGuess) === -1) {
@@ -83,15 +102,15 @@ function guess(){ //executes when a guess is made, controls game play
                 switchPlayer();
             }
             else{
-                playerMoney[turn] += random; //adds previously rolled random value to the player's score/money
-                alert(names[turn] + " guessed a letter correctly and got $" + random + "! They now have $" + playerMoney[turn] + ".")
+                playerMoney[turn] += randomMoney; //adds previously rolled random value to the player's score/money
+                alert(names[turn] + " guessed a letter correctly and got $" + randomMoney + "! They now have $" + playerMoney[turn] + ".")
             }
             makeWord(); //call the function to display updated word
         }
         else{
             alert("This letter was already guessed!");
         }
-        random = 0; //resets random $ amount back to zero so money has not been rolled
+        randomMoney = 0; //resets random $ amount back to zero so money has not been rolled
         document.getElementById("spin").removeAttribute("disabled");
     } else {
         alert("I don't know how you just pressed this button, but please click the spin button first!");

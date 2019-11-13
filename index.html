@@ -29,10 +29,12 @@
         <h1>Wheel of Fortune</h1>
         <h2 id="playerNames">Players: </h2>
         <br>
-        <button id="spin" type="button" onclick="spinWheel()">Click to spin the wheel!</button>
+        <button type="button" onclick="spinWheel()" id="spin">Click to spin the wheel!</button>
         <button type="button" onclick="guess()" id="guess" disabled>Click to guess a letter</button>
+        <button type="button" onclick="playAgain()" id="playAgain" style="display: none">Click to play again!</button>
         <br>
         <p id="showWord">testing</p>
+        <img id="wheel" src="wheel.png" alt="The Wheel of Fortune">
     </div>
     <footer style="display: none">
         <a href="https://icons8.com/icon/63812/color-wheel">Color Wheel icon by Icons8</a>
