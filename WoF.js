@@ -1,14 +1,11 @@
 let names = []; //player names
 let playerMoney = []; //player money
 let word = "index"; //word to guess
-let board = ""; //WoF board to display on page
-let myGuess; //players' current guess
 let choices = []; //letters already guessed
-let randomNumber = 0; //compliments randomMoney, is random num from 1-24
-let randomMoney = 0; //random amount of money, also determines if player has spun yet
+let randomMoney = 0; //amount of money spun, also determines if player has spun yet
 let turn = 0; //determines which players' turn it is
 
-function addPlayers() {
+function addPlayers() { //adds more name input fields so many players can play
     let number = parseInt(document.getElementById("playerNum").innerHTML) + 1;
     let newLabel = document.createElement("label");
     document.getElementById("playerNum").innerHTML = number.toString();
@@ -20,10 +17,13 @@ function addPlayers() {
 }
 
 function makeName(){ //starts game
+    //gets names
     for (let i = 0; i < parseInt(document.getElementById("playerNum").innerHTML); i++){
         names.push(document.getElementById("p" + (i + 1).toString()).value);
         playerMoney.push(0);
     }
+
+    //cute player introduction
     let alertNames = "";
     if (names.length === 2){
         alertNames = names[0] + " and " + names[1];
@@ -39,32 +39,64 @@ function makeName(){ //starts game
         }
     }
     alert("Welcome to Wheel of Fortune, " + alertNames);
-    document.getElementById("playerNames").innerHTML += alertNames;
+
+    //create name and score listing
+    for (let i = 0; i < names.length; i++){
+        let nameSpan = document.createElement("span");
+        nameSpan.appendChild(document.createTextNode(names[i].toString() + " (Score: "));
+        let scoreSpan = document.createElement("span");
+        scoreSpan.setAttribute("id", "p" + (i + 1) + "score");
+        scoreSpan.appendChild(document.createTextNode("0"));
+        nameSpan.appendChild(scoreSpan);
+        nameSpan.innerHTML += "), ";
+        document.getElementById("playerNames").appendChild(nameSpan);
+    }
+
+    //hide intro panel and reveal game panel
     document.getElementById("intro").style.display = "none";
     document.getElementById("game").style.visibility = "visible";
-    word = randomWord();
-    makeWord();
+
+    //choose word category
+    let wordType;
+    let valid = false;
+    while (valid === false){
+        wordType = prompt("What category of word would you like to play? (noun, verb, adjective)").toLowerCase();
+        if (wordType === "noun" || wordType === "adjective" || wordType === "verb"){
+            valid = true
+        }
+        else{
+            alert("Input was not valid. Please try again.")
+        }
+    }
+    word = randomWord(wordType);
+    updateBoard();
 }
 
-function spinWheel() {
-    randomNumber = Math.floor(Math.random()*24);
-    let deg = -(randomNumber / 24);
-    const boardValues = [500, 30, 200, 100, 500, 400, 300, 200, 100, 200, 850, 450, 200, 700, 250, 150, 400, 600, 250, 350, 500, 900, -1, 500];
-    randomMoney = boardValues[randomNumber];
-    document.getElementById("wheel").style.transform = "rotate(" + deg + "turn)";
-    if (randomMoney !== -1) {
-        alert(names[turn] + " spins the Wheel... and lands on $" + randomMoney + "!");
+function randomWord(category){ //chooses random word from large array of words
+    let categories = [];
+    let type; //0: verb, 1: noun, 2: adjective
+    switch (category) {
+        case "verb":
+            type = 0;
+            break;
+        case "noun":
+            type = 1;
+            break;
+        case "adjective":
+            type = 2;
+            break;
+        default:
+            type = 0;
     }
-    else{
-        alert(names[turn] + " spins the Wheel... and becomes bankrupt! Their amount of money has been set to 0.");
-        playerMoney[turn] = 0;
-    }
-    document.getElementById("guess").removeAttribute("disabled");
-    document.getElementById("spin").setAttribute("disabled", "");
+    categories[0] = ["travel", "decay", "shade", "ski", "bathe", "record", "wobble", "dare", "raise", "prefer", "radiate", "play", "prevent", "queue", "work", "attract", "reflect", "compare", "yell", "spare", "squeak", "meddle", "polish", "curl", "part", "escape", "note", "detect", "plant", "stitch", "invent", "whip", "twist", "admit", "unite", "avoid", "wander", "suggest", "scratch", "stretch", "deliver", "blind", "challenge", "knock", "share", "repair", "squeal", "grate", "battle", "explode", "announce", "tip", "trap", "suspend", "kiss", "x-ray", "rub", "float", "tap", "clip", "mine", "snow", "watch", "lock", "rejoice", "pull", "stay", "embarrass", "trust", "peep", "bare", "hope", "retire", "train", "change", "report", "shelter", "contain", "intend", "trot", "relax", "attend", "unlock", "interrupt", "sail", "moor", "buzz", "peck", "connect", "use", "strengthen", "whine", "dress", "face", "destroy", "suspect", "stain", "tire", "signal", "unfasten"];
+    categories[1] = ["fly", "sneeze", "hat", "finger", "discovery", "alarm", "daughter", "temper", "comparison", "hope", "voyage", "dinosaurs", "view", "muscle", "teaching", "tail", "wren", "finger", "wood", "smash", "tongue", "mark", "song", "pollution", "cast", "pizzas", "achiever", "card", "existence", "move", "snail", "year", "laborer", "winter", "scale", "crate", "oranges", "monkey", "respect", "suit", "force", "day", "rule", "air", "donkey", "hall", "frog", "humor", "store", "scent", "twig", "trouble", "button", "exchange", "writing", "kick", "cobweb", "transport", "ghost", "collar", "education", "son", "fire", "suggestion", "knowledge", "system", "limit", "roll", "curtain", "pin", "church", "ray", "texture", "aunt", "weather", "farm", "squirrel", "veil", "seed", "waste", "top", "kitty", "wing", "bite", "shake", "vegetable", "sleep", "home", "quilt", "guide", "effect", "name", "sea", "animal", "zinc", "substance", "fang", "dogs", "liquid", "nerve"];
+    categories[2] = ["nebulous", "scattered", "wet", "devilish", "certain", "agreeable", "dead", "shut", "used", "aback", "perpetual", "wakeful", "incredible", "acceptable", "adventurous", "naughty", "macho", "thoughtless", "far", "abstracted", "unsightly", "glamorous", "equal", "industrious", "remarkable", "aggressive", "miscreant", "terrific", "quarrelsome", "purring", "barbarous", "tall", "longing", "utopian", "worried", "ambiguous", "red", "broad", "domineering", "labored", "unequaled", "internal", "untidy", "whimsical", "sick", "bright", "unhealthy", "versed", "like", "imaginary", "steadfast", "cheerful", "sore", "muddled", "assorted", "whispering", "vulgar", "standing", "calm", "unkempt", "homely", "omniscient", "frail", "burly", "stereotyped", "aboard", "ill-informed", "jittery", "regular", "stingy", "jobless", "woozy", "profuse", "anxious", "fallacious", "annoyed", "fancy", "wide", "axiomatic", "dashing", "reminiscent", "wealthy", "future", "lying", "slim", "full", "plain", "mundane", "incompetent", "yellow", "obese", "mindless", "brash", "amusing", "military", "envious", "fertile", "shaky", "ten", "disgusted"];
+    return categories[type][Math.floor(Math.random()*99)] //random word from the category the players chose
 }
 
-function makeWord() {
-    board = ""; //resets board so no duplicate problems arise
+function updateBoard() { //updates game board
+    //game board
+    let board = "";
     for (let i = 0; i < word.length; i++){ //checks for matches between letters already chosen and actual word
         for (let j = 0; j < choices.length; j++){
             if (word[i] === choices[j]){
@@ -77,58 +109,78 @@ function makeWord() {
     }
     board = board.split("").join(" "); //spaces out the string for visibility
     document.getElementById("showWord").innerHTML = "GameBoard: " + board; //prints board on page
+
+    //player scores
+    for (let i = 0; i < names.length; i++){ //loops through each player to set the money to the array playerMoney
+        document.getElementById("p" + (i + 1) + "score").innerHTML = playerMoney[i]
+    }
+
+    //check for game end
     if (board === word.split("").join(" ")){
         alert("The word has been guessed! It was " + word +"!");
-        document.getElementById("playAgain").style.display = "block";
+        document.getElementById("playAgain").style.display = "block"; //show the play again button
     }
 }
 
-function playAgain() {
-    document.getElementById("playAgain").style.display = "none";
+function spinWheel() { //spins wheel to get a pseudorandom amount of money
+    const boardValues = [500, 30, 200, 100, 500, 400, 300, 200, 100, 200, 850, 450, 200, 700, 250, 150, 400, 600, 250, 350, 500, 900, -1, 500];
+    let randomNumber = Math.floor(Math.random()*24);
+    let deg = -(randomNumber / 24);
+    randomMoney = boardValues[randomNumber];
+    document.getElementById("wheel").style.transform = "rotate(" + deg + "turn)";
+    if (randomMoney !== -1) { //check for bankrupt tile
+        alert(names[turn] + " spins the Wheel... and lands on $" + randomMoney + "!");
+
+        //disable more spinning
+        document.getElementById("guess").removeAttribute("disabled");
+        document.getElementById("spin").setAttribute("disabled", "");
+    }
+    else{ //oops!
+        alert(names[turn] + " spins the Wheel... and becomes bankrupt! Their amount of money has been set to 0.");
+        playerMoney[turn] = 0;
+        nextPlayer();
+    }
+}
+
+function playAgain() { //soft reset of game
+    document.getElementById("playAgain").style.display = "none"; //hides button
     word = randomWord(); //new word!
-    choices = [];
-    turn = 0;
-    makeWord();
+    choices = []; //reset letters used
+    turn = 0; //reset turn
+    updateBoard(); //and update the board
 }
 
 function guess(){ //executes when a guess is made, controls game play
-    if (randomMoney !== 0) {
-        document.getElementById("guess").setAttribute("disabled", "");
-        myGuess = prompt("What letter would you like to guess?");
-        if (choices.indexOf(myGuess) === -1) {
-            choices.push(myGuess); //adds guessed letter to the already chosen array
-            if (word.indexOf(myGuess) === -1) {
+    if (randomMoney !== 0) { //redundant check if player has spun
+        document.getElementById("guess").setAttribute("disabled", ""); //disables guess button so player cannot guess again
+        let playerGuess = prompt("What letter would you like to guess?");
+        if (choices.indexOf(playerGuess) === -1) { //checks if the letter has already been chosen
+            choices.push(playerGuess); //adds guessed letter to the already chosen array
+            if (word.indexOf(playerGuess) === -1) { //checks if letter is in the word
                 alert(names[turn] + " didn't guess a letter correctly. Turn has been passed to the next player, " + names[turn + 1] + "!");
-                switchPlayer();
+                nextPlayer();
             }
-            else{
+            else{ //if letter is in the word
                 playerMoney[turn] += randomMoney; //adds previously rolled random value to the player's score/money
                 alert(names[turn] + " guessed a letter correctly and got $" + randomMoney + "! They now have $" + playerMoney[turn] + ".")
             }
-            makeWord(); //call the function to display updated word
+            updateBoard(); //update the board
         }
-        else{
+        else{ //if the letter was already chosen
             alert("This letter was already guessed!");
         }
-        randomMoney = 0; //resets random $ amount back to zero so money has not been rolled
-        document.getElementById("spin").removeAttribute("disabled");
-    } else {
+        randomMoney = 0; //resets random $ amount back to zero to indicate that wheel has not been spun
+        document.getElementById("spin").removeAttribute("disabled"); //enable the spin button
+    } else { //if the player somehow clicked the guess button before clicking spin
         alert("I don't know how you just pressed this button, but please click the spin button first!");
     }
 }
 
-function switchPlayer(){
-    if (turn + 1 < names.length){
+function nextPlayer(){ //switch to next player's turn
+    if (turn + 1 < names.length){ //add turn as long it is not the last player in the array
         turn++
     }
-    else{
+    else{ //come back to first player after last player's turn
         turn = 0
     }
-}
-
-function randomWord(){
-    let wordList = [
-        "ability","able","aboard","about","above","accept","accident","according","account","accurate","acres","across","act","action","active","activity","actual","actually","add","addition","additional","adjective","adult","adventure","advice","affect","afraid","after","afternoon","again","against","age","ago","agree","ahead","aid","air","airplane","alike","alive","all","allow","almost","alone","along","aloud","alphabet","already","also","although","am","among","amount","ancient","angle","angry","animal","announced","another","answer","ants","any","anybody","anyone","anything","anyway","anywhere","apart","apartment","appearance","apple","applied","appropriate","are","area","arm","army","around","arrange","arrangement","arrive","arrow","art","article","as","aside","ask","asleep","at","ate","atmosphere","atom","atomic","attached","attack","attempt","attention","audience","author","automobile","available","average","avoid","aware","away","baby","back","bad","badly","bag","balance","ball","balloon","band","bank","bar","bare","bark","barn","base","baseball","basic","basis","basket","bat","battle","be","bean","bear","beat","beautiful","beauty","became","because","become","becoming","bee","been","before","began","beginning","begun","behavior","behind","being","believed","bell","belong","below","belt","bend","beneath","bent","beside","best","bet","better","between","beyond","bicycle","bigger","biggest","bill","birds","birth","birthday","bit","bite","black","blank","blanket","blew","blind","block","blood","blow","blue","board","boat","body","bone","book","border","born","both","bottle","bottom","bound","bow","bowl","box","boy","brain","branch","brass","brave","bread","break","breakfast","breath","breathe","breathing","breeze","brick","bridge","brief","bright","bring","broad","broke","broken","brother","brought","brown","brush","buffalo","build","building","built","buried","burn","burst","bus","bush","business","busy","but","butter","buy","by","cabin","cage","cake","call","calm","came","camera","camp","can","canal","cannot","cap","capital","captain","captured","car","carbon","card","care","careful","carefully","carried","carry","case","cast","castle","cat","catch","cattle","caught","cause","cave","cell","cent","center","central","century","certain","certainly","chain","chair","chamber","chance","change","changing","chapter","character","characteristic","charge","chart","check","cheese","chemical","chest","chicken","chief","child","children","choice","choose","chose","chosen","church","circle","circus","citizen","city","class","classroom","claws","clay","clean","clear","clearly","climate","climb","clock","close","closely","closer","cloth","clothes","clothing","cloud","club","coach","coal","coast","coat","coffee","cold","collect","college","colony","color","column","combination","combine","come","comfortable","coming","command","common","community","company","compare","compass","complete","completely","complex","composed","composition","compound","concerned","condition","congress","connected","consider","consist","consonant","constantly","construction","contain","continent","continued","contrast","control","conversation","cook","cookies","cool","copper","copy","corn","corner","correct","correctly","cost","cotton","could","count","country","couple","courage","course","court","cover","cow","cowboy","crack","cream","create","creature","crew","crop","cross","crowd","cry","cup","curious","current","curve","customs","cut","cutting","daily","damage","dance","danger","dangerous","dark","darkness","date","daughter","dawn","day","dead","deal","dear","death","decide","declared","deep","deeply","deer","definition","degree","depend","depth","describe","desert","design","desk","detail","determine","develop","development","diagram","diameter","did","die","differ","difference","different","difficult","difficulty","dig","dinner","direct","direction","directly","dirt","dirty","disappear","discover","discovery","discuss","discussion","disease","dish","distance","distant","divide","division","do","doctor","does","dog","doing","doll","dollar","done","donkey","door","dot","double","doubt","down","dozen","draw","drawn","dream","dress","drew","dried","drink","drive","driven","driver","driving","drop","dropped","drove","dry","duck","due","dug","dull","during","dust","duty","each","eager","ear","earlier","early","earn","earth","easier","easily","east","easy","eat","eaten","edge","education","effect","effort","egg","eight","either","electric","electricity","element","elephant","eleven","else","empty","end","enemy","energy","engine","engineer","enjoy","enough","enter","entire","entirely","environment","equal","equally","equator","equipment","escape","especially","essential","establish","even","evening","event","eventually","ever","every","everybody","everyone","everything","everywhere","evidence","exact","exactly","examine","example","excellent","except","exchange","excited","excitement","exciting","exclaimed","exercise","exist","expect","experience","experiment","explain","explanation","explore","express","expression","extra","eye","face","facing","fact","factor","factory","failed","fair","fairly","fall","fallen","familiar","family","famous","far","farm","farmer","farther","fast","fastened","faster","fat","father","favorite","fear","feathers","feature","fed","feed","feel","feet","fell","fellow","felt","fence","few","fewer","field","fierce","fifteen","fifth","fifty","fight","fighting","figure","fill","film","final","finally","find","fine","finest","finger","finish","fire","fireplace","firm","first","fish","five","fix","flag","flame","flat","flew","flies","flight","floating","floor","flow","flower","fly","fog","folks","follow","food","foot","football","for","force","foreign","forest","forget","forgot","forgotten","form","former","fort","forth","forty","forward","fought","found","four","fourth","fox","frame","free","freedom","frequently","fresh","friend","friendly","frighten","frog","from","front","frozen","fruit","fuel","full","fully","fun","function","funny","fur","furniture","further","future","gain","game","garage","garden","gas","gasoline","gate","gather","gave","general","generally","gentle","gently","get","getting","giant","gift","girl","give","given","giving","glad","glass","globe","go","goes","gold","golden","gone","good","goose","got","government","grabbed","grade","gradually","grain","grandfather","grandmother","graph","grass","gravity","gray","great","greater","greatest","greatly","green","grew","ground","group","grow","grown","growth","guard","guess","guide","gulf","gun","habit","had","hair","half","halfway","hall","hand","handle","handsome","hang","happen","happened","happily","happy","harbor","hard","harder","hardly","has","hat","have","having","hay","he","headed","heading","health","heard","hearing","heart","heat","heavy","height","held","hello","help","helpful","her","herd","here","herself","hidden","hide","high","higher","highest","highway","hill","him","himself","his","history","hit","hold","hole","hollow","home","honor","hope","horn","horse","hospital","hot","hour","house","how","however","huge","human","hundred","hung","hungry","hunt","hunter","hurried","hurry","hurt","husband","ice","idea","identity","if","ill","image","imagine","immediately","importance","important","impossible","improve","in","inch","include","including","income","increase","indeed","independent","indicate","individual","industrial","industry","influence","information","inside","instance","instant","instead","instrument","interest","interior","into","introduced","invented","involved","iron","is","island","it","its","itself","jack","jar","jet","job","join","joined","journey","joy","judge","jump","jungle","just","keep","kept","key","kids","kill","kind","kitchen","knew","knife","know","knowledge","known","label","labor","lack","lady","laid","lake","lamp","land","language","large","larger","largest","last","late","later","laugh","law","lay","layers","lead","leader","leaf","learn","least","leather","leave","leaving","led","left","leg","length","lesson","let","letter","level","library","lie","life","lift","light","like","likely","limited","line","lion","lips","liquid","list","listen","little","live","living","load","local","locate","location","log","lonely","long","longer","look","loose","lose","loss","lost","lot","loud","love","lovely","low","lower","luck","lucky","lunch","lungs","lying","machine","machinery","mad","made","magic","magnet","mail","main","mainly","major","make","making","man","managed","manner","manufacturing","many","map","mark","market","married","mass","massage","master","material","mathematics","matter","may","maybe","me","meal","mean","means","meant","measure","meat","medicine","meet","melted","member","memory","men","mental","merely","met","metal","method","mice","middle","might","mighty","mile","military","milk","mill","mind","mine","minerals","minute","mirror","missing","mission","mistake","mix","mixture","model","modern","molecular","moment","money","monkey","month","mood","moon","more","morning","most","mostly","mother","motion","motor","mountain","mouse","mouth","move","movement","movie","moving","mud","muscle","music","musical","must","my","myself","mysterious","nails","name","nation","national","native","natural","naturally","nature","near","nearby","nearer","nearest","nearly","necessary","neck","needed","needle","needs","negative","neighbor","neighborhood","nervous","nest","never","new","news","newspaper","next","nice","night","nine","no","nobody","nodded","noise","none","noon","nor","north","nose","not","note","noted","nothing","notice","noun","now","number","numeral","nuts","object","observe","obtain","occasionally","occur","ocean","of","off","offer","office","officer","official","oil","old","older","oldest","on","once","one","only","onto","open","operation","opinion","opportunity","opposite","or","orange","orbit","order","ordinary","organization","organized","origin","original","other","ought","our","ourselves","out","outer","outline","outside","over","own","owner","oxygen","pack","package","page","paid","pain","paint","pair","palace","pale","pan","paper","paragraph","parallel","parent","park","part","particles","particular","particularly","partly","parts","party","pass","passage","past","path","pattern","pay","peace","pen","pencil","people","per","percent","perfect","perfectly","perhaps","period","person","personal","pet","phrase","physical","piano","pick","picture","pictured","pie","piece","pig","pile","pilot","pine","pink","pipe","pitch","place","plain","plan","plane","planet","planned","planning","plant","plastic","plate","plates","play","pleasant","please","pleasure","plenty","plural","plus","pocket","poem","poet","poetry","point","pole","police","policeman","political","pond","pony","pool","poor","popular","population","porch","port","position","positive","possible","possibly","post","pot","potatoes","pound","pour","powder","power","powerful","practical","practice","prepare","present","president","press","pressure","pretty","prevent","previous","price","pride","primitive","principal","principle","printed","private","prize","probably","problem","process","produce","product","production","program","progress","promised","proper","properly","property","protection","proud","prove","provide","public","pull","pupil","pure","purple","purpose","push","put","putting","quarter","queen","question","quick","quickly","quiet","quietly","quite","rabbit","race","radio","railroad","rain","raise","ran","ranch","range","rapidly","rate","rather","raw","rays","reach","read","reader","ready","real","realize","rear","reason","recall","receive","recent","recently","recognize","record","red","refer","refused","region","regular","related","relationship","religious","remain","remarkable","remember","remove","repeat","replace","replied","report","represent","require","research","respect","rest","result","return","review","rhyme","rhythm","rice","rich","ride","riding","right","ring","rise","rising","river","road","roar","rock","rocket","rocky","rod","roll","roof","room","root","rope","rose","rough","round","route","row","rubbed","rubber","rule","ruler","run","running","rush","sad","saddle","safe","safety","said","sail","sale","salmon","salt","same","sand","sang","sat","satellites","satisfied","save","saved","saw","say","scale","scared","scene","school","science","scientific","scientist","score","screen","sea","search","season","seat","second","secret","section","see","seed","seeing","seems","seen","seldom","select","selection","sell","send","sense","sent","sentence","separate","series","serious","serve","service","sets","setting","settle","settlers","seven","several","shade","shadow","shake","shaking","shall","shallow","shape","share","sharp","she","sheep","sheet","shelf","shells","shelter","shine","shinning","ship","shirt","shoe","shoot","shop","shore","short","shorter","shot","should","shoulder","shout","show","shown","shut","sick","sides","sight","sign","signal","silence","silent","silk","silly","silver","similar","simple","simplest","simply","since","sing","single","sink","sister","sit","sitting","situation","six","size","skill","skin","sky","slabs","slave","sleep","slept","slide","slight","slightly","slip","slipped","slope","slow","slowly","small","smaller","smallest","smell","smile","smoke","smooth","snake","snow","so","soap","social","society","soft","softly","soil","solar","sold","soldier","solid","solution","solve","some","somebody","somehow","someone","something","sometime","somewhere","son","song","soon","sort","sound","source","south","southern","space","speak","special","species","specific","speech","speed","spell","spend","spent","spider","spin","spirit","spite","split","spoken","sport","spread","spring","square","stage","stairs","stand","standard","star","stared","start","state","statement","station","stay","steady","steam","steel","steep","stems","step","stepped","stick","stiff","still","stock","stomach","stone","stood","stop","stopped","store","storm","story","stove","straight","strange","stranger","straw","stream","street","strength","stretch","strike","string","strip","strong","stronger","struck","structure","struggle","stuck","student","studied","studying","subject","substance","success","successful","such","sudden","suddenly","sugar","suggest","suit","sum","summer","sun","sunlight","supper","supply","support","suppose","sure","surface","surprise","surrounded","swam","sweet","swept","swim","swimming","swing","swung","syllable","symbol","system","table","tail","take","taken","tales","talk","tall","tank","tape","task","taste","taught","tax","tea","teach","teacher","team","tears","teeth","telephone","television","tell","temperature","ten","tent","term","terrible","test","than","thank","that","thee","them","themselves","then","theory","there","therefore","these","they","thick","thin","thing","think","third","thirty","this","those","thou","though","thought","thousand","thread","three","threw","throat","through","throughout","throw","thrown","thumb","thus","thy","tide","tie","tight","tightly","till","time","tin","tiny","tip","tired","title","to","tobacco","today","together","told","tomorrow","tone","tongue","tonight","too","took","tool","top","topic","torn","total","touch","toward","tower","town","toy","trace","track","trade","traffic","trail","train","transportation","trap","travel","treated","tree","triangle","tribe","trick","tried","trip","troops","tropical","trouble","truck","trunk","truth","try","tube","tune","turn","twelve","twenty","twice","two","type","typical","uncle","under","underline","understanding","unhappy","union","unit","universe","unknown","unless","until","unusual","up","upon","upper","upward","us","use","useful","using","usual","usually","valley","valuable","value","vapor","variety","various","vast","vegetable","verb","vertical","very","vessels","victory","view","village","visit","visitor","voice","volume","vote","vowel","voyage","wagon","wait","walk","wall","want","war","warm","warn","was","wash","waste","watch","water","wave","way","we","weak","wealth","wear","weather","week","weigh","weight","welcome","well","went","were","west","western","wet","whale","what","whatever","wheat","wheel","when","whenever","where","wherever","whether","which","while","whispered","whistle","white","who","whole","whom","whose","why","wide","widely","wife","wild","will","willing","win","wind","window","wing","winter","wire","wise","wish","with","within","without","wolf","women","won","wonder","wonderful","wood","wooden","wool","word","wore","work","worker","world","worried","worry","worse","worth","would","wrapped","write","writer","writing","written","wrong","wrote","yard","year","yellow","yes","yesterday","yet","you","young","younger","your","yourself","youth","zero","zebra","zipper","zoo","zulu"
-    ]; //long list of words to pick from
-    return wordList[Math.floor(Math.random()*1952)]
 }
