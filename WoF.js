@@ -1,3 +1,4 @@
+//declare global variables
 let names = []; //player names
 let playerMoney = []; //player money
 let word = "index"; //word to guess
@@ -142,6 +143,15 @@ function spinWheel() { //spins wheel to get a pseudorandom amount of money
     }
 }
 
+function nextPlayer(){ //switch to next player's turn
+    if (turn + 1 < names.length){ //add turn as long it is not the last player in the array
+        turn++
+    }
+    else{ //come back to first player after last player's turn
+        turn = 0
+    }
+}
+
 function playAgain() { //soft reset of game
     document.getElementById("playAgain").style.display = "none"; //hides button
     word = randomWord(); //new word!
@@ -173,14 +183,5 @@ function guess(){ //executes when a guess is made, controls game play
         document.getElementById("spin").removeAttribute("disabled"); //enable the spin button
     } else { //if the player somehow clicked the guess button before clicking spin
         alert("I don't know how you just pressed this button, but please click the spin button first!");
-    }
-}
-
-function nextPlayer(){ //switch to next player's turn
-    if (turn + 1 < names.length){ //add turn as long it is not the last player in the array
-        turn++
-    }
-    else{ //come back to first player after last player's turn
-        turn = 0
     }
 }
